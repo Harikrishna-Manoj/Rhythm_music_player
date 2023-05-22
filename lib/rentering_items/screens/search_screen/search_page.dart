@@ -1,6 +1,5 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:rythm1/rentering_items/screens/category_screens/favourit_page/widgets/switch.dart';
 import 'package:rythm1/rentering_items/screens/search_screen/widgets/search_widget.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -8,7 +7,6 @@ import 'package:text_scroll/text_scroll.dart';
 import '../../../database/models/song_model.dart';
 import '../../styles_images/utils.dart';
 import '../category_screens/playlist_page/widgets/playlistwidget.dart';
-import '../explore_screen/explore_recend_page.dart';
 import '../miniplayer/mini_player.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -156,7 +154,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                         textcolor: Colors.white),
                                     IconButton(
                                         onPressed: () {
-                                          showPlayListBottomSheet(
+                                          showSearchPlayListBottomSheet(
+                                              serchSongList: searchList,
                                               context: context,
                                               songIndex: songIndex);
                                         },

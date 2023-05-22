@@ -8,6 +8,7 @@ import 'package:rythm1/rentering_items/common_widgets/common.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:text_scroll/text_scroll.dart';
 import '../../../../../database/models/most_played_song_model.dart';
+import '../../../../../database/models/song_model.dart';
 import '../../../../styles_images/utils.dart';
 import '../../../miniplayer/mini_player.dart';
 import '../playlist_songs.dart';
@@ -521,6 +522,106 @@ showPlayListBottomSheet(
           ))
         ],
       ),
+    ),
+  );
+}
+
+showSearchPlayListBottomSheet(
+    {required BuildContext context,
+    required int songIndex,
+    required List<SongsModel> serchSongList}) {
+  final playBox = PlayListSongBox.getInstance();
+  showBottomSheet(
+    context: context,
+    builder: (context) => Container(
+      decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 135, 154, 251),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0))),
+      height: 300,
+      width: double.infinity,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                'My PlayLists',
+                style: safeGoogleFont('Poppins',
+                    fontSize: 25,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white),
+              ),
+              IconButton(
+                  onPressed: () {
+                    showcreatePlayList(context);
+                  },
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 28,
+                  ))
+            ],
+          ),
+          Expanded(
+              child: ValueListenableBuilder<Box<PlaylistSongModel>>(
+            valueListenable: playBox.listenable(),
+            builder: (context, Box<PlaylistSongModel> playSong, child) {
+              List<PlaylistSongModel> playlistSong = playSong.values.toList();
+              return playlistSong.isNotEmpty
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: playlistSong.length,
+                      itemBuilder: ((context, index) {
+                        return searchPlayListSongTile(
+                            playListName: playlistSong[index].playlistName!,
+                            playSong: playSong,
+                            index: index,
+                            songIndex: songIndex,
+                            playlistSong: playlistSong,
+                            context: context,
+                            serchSongList: serchSongList);
+                      }),
+                    )
+                  : noPlaylistWidget(Colors.white);
+            },
+          ))
+        ],
+      ),
+    ),
+  );
+}
+
+searchPlayListSongTile(
+    {required String playListName,
+    required List<SongsModel> serchSongList,
+    required Box<PlaylistSongModel> playSong,
+    required int index,
+    required int songIndex,
+    required List<PlaylistSongModel> playlistSong,
+    required BuildContext context}) {
+  return ListTile(
+    onTap: () {
+      checkingSearchSongExistance(index, songIndex, context, serchSongList);
+    },
+    leading: ClipRRect(
+      borderRadius: BorderRadius.circular(20), // Image border
+      child: SizedBox.fromSize(
+        size: const Size.fromRadius(20), // Image radius
+        child: Image.asset('assets/images/playlist.png', fit: BoxFit.cover),
+      ),
+    ),
+    title: Text(
+      playlistSong[index].playlistName!,
+      style: safeGoogleFont('Poppins',
+          fontSize: 20, fontWeight: FontWeight.w500, color: Colors.white),
+    ),
+    trailing: IconButton(
+      onPressed: () {
+        deletePlaylist(index);
+      },
+      icon: const Icon(Icons.remove_circle_outline),
+      color: Colors.white,
     ),
   );
 }

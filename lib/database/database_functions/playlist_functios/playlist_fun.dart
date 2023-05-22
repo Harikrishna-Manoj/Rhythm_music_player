@@ -51,6 +51,34 @@ addToPlaylist(int songIndex, int index, BuildContext context) {
       textColor: Colors.white);
 }
 
+searchToPlaylist(int songIndex, int index, BuildContext context,
+    List<SongsModel> serchSongList) {
+  final playBox = PlayListSongBox.getInstance();
+  List<PlaylistSongModel> playDbSongs = playBox.values.toList();
+
+  PlaylistSongModel? playSongs = playBox.getAt(index);
+  List<dynamic> playListDb = playSongs!.playlistSongs!;
+
+  playListDb.add(SongsModel(
+      id: serchSongList[songIndex].id,
+      songName: serchSongList[songIndex].songName,
+      artist: serchSongList[songIndex].artist,
+      duration: serchSongList[songIndex].duration,
+      songurl: serchSongList[songIndex].songurl));
+
+  playBox.putAt(
+      index,
+      PlaylistSongModel(
+          playlistName: playDbSongs[index].playlistName,
+          playlistSongs: playListDb));
+  Navigator.pop(context);
+  showSnackBar(
+      context: context,
+      message: 'Song added',
+      colors: const Color(0xFF879AFB),
+      textColor: Colors.white);
+}
+
 mostAddToPlaylist(
     int songIndex, int index, BuildContext context, listedMostSongs) {
   final playBox = PlayListSongBox.getInstance();
@@ -116,6 +144,27 @@ checkingSongExistance(int index, int songIndex, BuildContext context) {
         textColor: Colors.white);
   } else {
     addToPlaylist(songIndex, index, context);
+  }
+}
+
+checkingSearchSongExistance(int index, int songIndex, BuildContext context,
+    List<SongsModel> serchSongList) {
+  final playBox = PlayListSongBox.getInstance();
+  final box = SongBox.getInstance();
+  List<SongsModel> dbSongList = box.values.toList();
+  PlaylistSongModel? value = playBox.getAt(index);
+  List<dynamic> playListSongs = value!.playlistSongs!;
+  bool isSongExists = playListSongs
+      .where((element) => element.id == dbSongList[songIndex].id)
+      .isNotEmpty;
+  if (isSongExists) {
+    showSnackBar(
+        context: context,
+        message: 'You already added this song',
+        colors: Colors.red,
+        textColor: Colors.white);
+  } else {
+    searchToPlaylist(songIndex, index, context, serchSongList);
   }
 }
 
