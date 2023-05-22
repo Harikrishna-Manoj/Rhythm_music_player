@@ -60,10 +60,10 @@ class _MusicListPageState extends State<MusicListPage> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-              onPressed: () => Navigator.push(
+              onPressed: () => Navigator.pushReplacement(
                     context,
                     PageTransition(
-                      type: PageTransitionType.bottomToTop,
+                      type: PageTransitionType.leftToRight,
                       child: const ExplorePages(),
                     ),
                   ),
@@ -112,11 +112,11 @@ class _MusicListPageState extends State<MusicListPage> {
                 child: FloatingActionButton.extended(
                     backgroundColor: const Color(0xFF879AFB),
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           PageTransition(
                               child: const CategoryPage(),
-                              type: PageTransitionType.rightToLeft));
+                              type: PageTransitionType.bottomToTop));
                     },
                     label: exploreFloatingButtonText('Explore')))
           ],

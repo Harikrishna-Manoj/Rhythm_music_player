@@ -22,7 +22,7 @@ Future<void> enterToExplore(BuildContext context) async {
   );
   (recentSongs.isEmpty)
       // ignore: use_build_context_synchronously
-      ? Navigator.push(
+      ? Navigator.pushReplacement(
           context,
           PageTransition(
             type: PageTransitionType.bottomToTop,

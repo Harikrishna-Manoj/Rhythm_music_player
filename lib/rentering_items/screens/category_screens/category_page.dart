@@ -4,10 +4,10 @@ import 'package:rythm1/rentering_items/common_widgets/common.dart';
 import 'package:rythm1/rentering_items/screens/category_screens/favourit_page/favourit_page.dart';
 import 'package:rythm1/rentering_items/screens/category_screens/playlist_page/playlist_page.dart';
 import 'package:rythm1/rentering_items/screens/category_screens/mostplayed_page/mostplayed_page.dart';
+import 'package:rythm1/rentering_items/screens/explore_screen/explore_recend_page.dart';
 import 'package:rythm1/rentering_items/screens/search_screen/search_page.dart';
 import 'package:page_transition/page_transition.dart';
 import '../../../database/models/song_model.dart';
-import '../explore_screen/explore_recend_page.dart';
 import '../music_list_screen/music_list_page.dart';
 import '../search_screen/widgets/search_widget.dart';
 import '../settings_screen/setting_page.dart';
@@ -108,15 +108,14 @@ class _CategoryPageState extends State<CategoryPage> {
                             color: Colors.black,
                           ),
                           onPressed: () => Navigator.pushReplacement(
-                            context,
-                            PageTransition(
-                                child: const ExplorePages(),
-                                type: PageTransitionType.topToBottom),
-                          ),
+                              context,
+                              PageTransition(
+                                  child: const ExplorePages(),
+                                  type: PageTransitionType.leftToRight)),
                           iconSize: 15,
                         ),
                         InkWell(
-                            onTap: () => Navigator.pushReplacement(
+                            onTap: () => Navigator.push(
                                   context,
                                   PageTransition(
                                       child: const SearchScreen(),
@@ -154,7 +153,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                 context,
                                 PageTransition(
                                     child: const MusicListPage(),
-                                    type: PageTransitionType.leftToRight),
+                                    type: PageTransitionType.rightToLeft),
                               ),
                               child: Image.asset(
                                 'assets/images/all_songs.png',

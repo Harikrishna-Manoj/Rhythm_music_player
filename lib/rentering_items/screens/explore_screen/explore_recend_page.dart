@@ -100,10 +100,10 @@ class _ExplorePagesState extends State<ExplorePages> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () => Navigator.push(
+                          onTap: () => Navigator.pushReplacement(
                             context,
                             PageTransition(
-                              type: PageTransitionType.bottomToTop,
+                              type: PageTransitionType.rightToLeft,
                               child: const MusicListPage(),
                             ),
                           ),
@@ -163,7 +163,7 @@ class _ExplorePagesState extends State<ExplorePages> {
                   Padding(
                     padding: EdgeInsets.only(top: height * .05),
                     child: TextButton(
-                      onPressed: () => Navigator.push(
+                      onPressed: () => Navigator.pushReplacement(
                           context,
                           PageTransition(
                               type: PageTransitionType.bottomToTop,
