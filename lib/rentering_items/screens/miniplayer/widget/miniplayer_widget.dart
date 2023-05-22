@@ -45,7 +45,7 @@ Widget bottomDetails(context) {
                   overflow: TextOverflow.ellipsis,
                 ),
                 trailing: SizedBox(
-                  width: 155,
+                  width: width * .43,
                   height: 70,
                   child: Row(
                     children: [
@@ -103,7 +103,8 @@ Widget bottomDetails(context) {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 10, right: 30, left: 20),
+                padding: EdgeInsets.only(
+                    top: height * .01, right: width * .09, left: width * .06),
                 child: progressBar(
                     player: player, duration: duration, position: position),
               )

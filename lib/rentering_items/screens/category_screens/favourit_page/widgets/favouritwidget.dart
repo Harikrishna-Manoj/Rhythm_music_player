@@ -4,7 +4,6 @@ import 'package:rythm1/database/database_functions/favourit_function/favourit_fu
 import 'package:rythm1/rentering_items/screens/category_screens/category_page.dart';
 import 'package:rythm1/rentering_items/screens/miniplayer/mini_player.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:rythm1/rentering_items/screens/music_operation_screen/music_operation_page.dart';
 import 'package:text_scroll/text_scroll.dart';
 import '../../../../styles_images/utils.dart';
 
