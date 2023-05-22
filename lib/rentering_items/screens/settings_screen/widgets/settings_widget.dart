@@ -476,7 +476,7 @@ Padding settingsHeading(String head) {
 
 Text bottomVersion() {
   return Text(
-    'Version 1.0.0',
+    'Version 1.0.1',
     style: safeGoogleFont('Poppins',
         fontSize: 12,
         fontWeight: FontWeight.w600,

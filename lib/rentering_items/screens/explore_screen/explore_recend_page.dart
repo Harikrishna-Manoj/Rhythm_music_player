@@ -121,7 +121,7 @@ class _ExplorePagesState extends State<ExplorePages> {
                         Padding(
                           padding: const EdgeInsets.only(right: 197, top: 10),
                           child: Text(
-                            "Find your  RYTHM",
+                            "Find your  RHYTHM",
                             style: safeGoogleFont(
                               'Poppins',
                               fontSize: 15,
