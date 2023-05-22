@@ -135,7 +135,7 @@ Padding settingsShare(BuildContext context) {
     child: InkWell(
       onTap: () {
         Share.share(
-            '''https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChcSEwi1_5Ln_ej-AhUYoZYKHT2rAP4YABAAGgJ0bA&ohost=www.google.com&cid=CAESauD2RmQ8Nid8aJKmuDvL_rg8Zbuh4Iyvp5gsctPJ42KAW5dWpJc-pcPGSGzD9FamhfmDOwdcAWA8306m7szNDGtcGdxSUdCspVbY5PHuU7yKMGZf9gC-OlUt6ixQcZiUBJ1ZEF-EmUOPTSM&sig=AOD64_2Xz1iQK-rMR3h_zzEQ5vi_ePmrgQ&q&adurl&ved=2ahUKEwiBnovn_ej-AhVHtVYBHZufC-cQ0Qx6BAgIEAE''',
+            "https://play.google.com/store/apps/details?id=in.freelance.rythm1 ",
             subject: "Github Repo Of This App");
       },
       child: Row(

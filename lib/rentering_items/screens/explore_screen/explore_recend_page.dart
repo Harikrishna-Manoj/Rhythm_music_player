@@ -28,7 +28,6 @@ class _ExplorePagesState extends State<ExplorePages> {
   final box = RecentBox.getInstance();
   final AssetsAudioPlayer audioPlayer = AssetsAudioPlayer.withId('0');
   List<Audio> recentAudios = [];
-
   @override
   void initState() {
     late List<RecentSongModel> recentSongs =
@@ -47,16 +46,15 @@ class _ExplorePagesState extends State<ExplorePages> {
   List<RecentSongModel> recentMusics = [];
   @override
   Widget build(BuildContext context) {
-    // orientation = MediaQuery.of(context).orientation;
-    // size = MediaQuery.of(context).size;
-    // height = size.height;
-    // width = size.width;
+    var size = MediaQuery.of(context).size;
+    var height = size.height;
+    var width = size.width;
     return Scaffold(
       key: _scaffoldKey,
       drawer: Drawer(
         backgroundColor: const Color(0xFF879AFB),
         child: ListView(
-          padding: const EdgeInsets.only(left: 10.0, top: 50),
+          padding: EdgeInsets.only(left: width * .01, top: height * .05),
           children: [settingsItems(context)],
         ),
       ),
@@ -65,10 +63,12 @@ class _ExplorePagesState extends State<ExplorePages> {
             valueListenable: box.listenable(),
             builder: (context, Box<RecentSongModel> dbRecent, child) {
               recentMusics = dbRecent.values.toList().reversed.toList();
+
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 25, top: 10),
+                    padding:
+                        EdgeInsets.only(left: width * .090, top: height * .008),
                     child: InkWell(
                       onTap: () => Navigator.push(
                         context,
@@ -76,20 +76,23 @@ class _ExplorePagesState extends State<ExplorePages> {
                             child: const SearchScreen(),
                             type: PageTransitionType.topToBottom),
                       ),
-                      child: searchWidget(),
+                      child: searchWidget(context),
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(top: 20, right: 15, left: 15),
+                    padding: EdgeInsets.only(
+                      top: height * .015,
+                      right: width * .04,
+                      left: width * .04,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
-                          height: 30,
+                          height: 25,
                           child: InkWell(
                             child: Image.asset(
-                              'assets/images/setting.png',
+                              'assets/images/settings.png',
                             ),
                             onTap: () {
                               _scaffoldKey.currentState?.openDrawer();
@@ -145,7 +148,7 @@ class _ExplorePagesState extends State<ExplorePages> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 40.0),
+                    padding: EdgeInsets.only(top: height * .05),
                     child: SizedBox(
                         height: 400,
                         child: ScrollSnapList(
@@ -153,12 +156,12 @@ class _ExplorePagesState extends State<ExplorePages> {
                           dynamicItemSize: true,
                           itemBuilder: _buildListItem,
                           itemCount: recentMusics.length,
-                          itemSize: 150,
+                          itemSize: width * .5555,
                           onItemFocus: (p0) {},
                         )),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 30),
+                    padding: EdgeInsets.only(top: height * .05),
                     child: TextButton(
                       onPressed: () => Navigator.push(
                           context,
@@ -168,7 +171,7 @@ class _ExplorePagesState extends State<ExplorePages> {
                       style: TextButton.styleFrom(
                           backgroundColor: const Color(0xFF879AFB),
                           foregroundColor: Colors.white,
-                          fixedSize: const Size(300, 60),
+                          fixedSize: Size(width * .8, height * .06),
                           shape: const StadiumBorder()),
                       child: Text(
                         "Explore",
@@ -188,9 +191,12 @@ class _ExplorePagesState extends State<ExplorePages> {
   }
 
   Widget _buildListItem(BuildContext context, int index) {
+    var size = MediaQuery.of(context).size;
+    var height = size.height;
+    var width = size.width;
     return SizedBox(
-      width: 150,
-      height: 250,
+      width: width * .5555,
+      height: height * .2,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
@@ -210,13 +216,6 @@ class _ExplorePagesState extends State<ExplorePages> {
                         headPhoneStrategy:
                             HeadPhoneStrategy.pauseOnUnplugPlayOnPlug,
                         loopMode: LoopMode.playlist);
-                    // Navigator.push(
-                    //   context,
-                    //   PageTransition(
-                    //     type: PageTransitionType.bottomToTop,
-                    //     child: const MusicPlay(),
-                    //   ),
-                    // );
                     showBottomSheet(
                       context: context,
                       builder: (context) => bottomSheet(
@@ -230,14 +229,15 @@ class _ExplorePagesState extends State<ExplorePages> {
                     quality: 100,
                     artworkQuality: FilterQuality.high,
                     artworkBorder: BorderRadius.circular(15),
-                    artworkHeight: 250,
-                    artworkWidth: 150,
+                    artworkHeight: height * .3,
+                    artworkWidth: width * .5555,
                     nullArtworkWidget: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: Image.asset(
                         'assets/images/head1.png',
                         fit: BoxFit.cover,
-                        height: 250,
+                        width: width * .5555,
+                        height: height * .3,
                       ),
                     ),
                   ),
@@ -255,9 +255,10 @@ class _ExplorePagesState extends State<ExplorePages> {
                       height: 1.5,
                       color: Colors.white),
                 ),
-                Text(
+                TextScroll(
+                  mode: TextScrollMode.endless,
+                  velocity: const Velocity(pixelsPerSecond: Offset(30, 0)),
                   recentMusics[index].artist!,
-                  overflow: TextOverflow.ellipsis,
                   style: safeGoogleFont('Poppins',
                       fontWeight: FontWeight.w600,
                       height: 1.5,

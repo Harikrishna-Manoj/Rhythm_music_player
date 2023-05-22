@@ -29,6 +29,9 @@ InkWell allMusicList({
   required int songIndex,
   required BuildContext context,
 }) {
+  var size = MediaQuery.of(context).size;
+  var height = size.height;
+  var width = size.width;
   return InkWell(
     onTap: () {
       audioPlayer.open(
@@ -68,12 +71,15 @@ InkWell allMusicList({
         type: ArtworkType.AUDIO,
         quality: 100,
         artworkQuality: FilterQuality.high,
+        artworkHeight: height * 0.07,
+        artworkWidth: width * .150,
         artworkBorder: BorderRadius.circular(15),
         artworkFit: BoxFit.cover,
         nullArtworkWidget: ClipRRect(
           borderRadius: BorderRadius.circular(15),
           child: Image.asset(
             'assets/images/head1.png',
+            height: height * .07,
             fit: BoxFit.cover,
           ),
         ),

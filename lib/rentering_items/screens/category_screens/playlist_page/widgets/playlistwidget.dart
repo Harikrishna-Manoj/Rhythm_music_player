@@ -18,12 +18,20 @@ ListTile songListPlaylist(
     required int numberofSongs,
     required int index,
     required BuildContext context}) {
+  final size = MediaQuery.of(context).size;
+  final height = size.height;
+  final width = size.width;
   return ListTile(
     leading: ClipRRect(
       borderRadius: BorderRadius.circular(20), // Image border
       child: SizedBox.fromSize(
         size: const Size.fromRadius(30), // Image radius
-        child: Image.asset(playListImage, fit: BoxFit.cover),
+        child: Image.asset(
+          playListImage,
+          height: height * .07,
+          width: width * .150,
+          fit: BoxFit.cover,
+        ),
       ),
     ),
     title: TextScroll(
@@ -79,6 +87,9 @@ ListTile playListSongsList(
     required int playIndex,
     required Box<PlaylistSongModel> playBox,
     required BuildContext context}) {
+  var size = MediaQuery.of(context).size;
+  var height = size.height;
+  var width = size.width;
   return ListTile(
     onTap: () {
       audioPlayer.open(Playlist(audios: playConvertedAudio, startIndex: index),
@@ -96,11 +107,14 @@ ListTile playListSongsList(
       quality: 100,
       artworkQuality: FilterQuality.high,
       artworkBorder: BorderRadius.circular(15),
+      artworkHeight: height * .07,
+      artworkWidth: width * .150,
       artworkFit: BoxFit.cover,
       nullArtworkWidget: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: Image.asset(
           'assets/images/head1.png',
+          height: height * .07,
           fit: BoxFit.cover,
         ),
       ),
@@ -488,19 +502,21 @@ showPlayListBottomSheet(
             valueListenable: playBox.listenable(),
             builder: (context, Box<PlaylistSongModel> playSong, child) {
               List<PlaylistSongModel> playlistSong = playSong.values.toList();
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: playlistSong.length,
-                itemBuilder: ((context, index) {
-                  return playListSongTile(
-                      playListName: playlistSong[index].playlistName!,
-                      playSong: playSong,
-                      index: index,
-                      songIndex: songIndex,
-                      playlistSong: playlistSong,
-                      context: context);
-                }),
-              );
+              return playlistSong.isNotEmpty
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: playlistSong.length,
+                      itemBuilder: ((context, index) {
+                        return playListSongTile(
+                            playListName: playlistSong[index].playlistName!,
+                            playSong: playSong,
+                            index: index,
+                            songIndex: songIndex,
+                            playlistSong: playlistSong,
+                            context: context);
+                      }),
+                    )
+                  : noPlaylistWidget(Colors.white);
             },
           ))
         ],
@@ -552,20 +568,22 @@ showMostPagePlayListBottomSheet({
             valueListenable: playBox.listenable(),
             builder: (context, Box<PlaylistSongModel> playSong, child) {
               List<PlaylistSongModel> playlistSong = playSong.values.toList();
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: playlistSong.length,
-                itemBuilder: ((context, index) {
-                  return mostPlayListSongTile(
-                      listedMostSongs: listedMostSongs,
-                      playListName: playlistSong[index].playlistName!,
-                      playSong: playSong,
-                      index: index,
-                      songIndex: songIndex,
-                      playlistSong: playlistSong,
-                      context: context);
-                }),
-              );
+              return playlistSong.isNotEmpty
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: playlistSong.length,
+                      itemBuilder: ((context, index) {
+                        return mostPlayListSongTile(
+                            listedMostSongs: listedMostSongs,
+                            playListName: playlistSong[index].playlistName!,
+                            playSong: playSong,
+                            index: index,
+                            songIndex: songIndex,
+                            playlistSong: playlistSong,
+                            context: context);
+                      }),
+                    )
+                  : noPlaylistWidget(Colors.white);
             },
           ))
         ],
@@ -614,19 +632,21 @@ showcurrentPlayListBottomSheet(
             valueListenable: playBox.listenable(),
             builder: (context, Box<PlaylistSongModel> playSong, child) {
               List<PlaylistSongModel> playlistSong = playSong.values.toList();
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: playlistSong.length,
-                itemBuilder: ((context, index) {
-                  return currentplayListSongTile(
-                      playListName: playlistSong[index].playlistName!,
-                      playSong: playSong,
-                      index: index,
-                      songId: songId,
-                      playlistSong: playlistSong,
-                      context: context);
-                }),
-              );
+              return playlistSong.isNotEmpty
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: playlistSong.length,
+                      itemBuilder: ((context, index) {
+                        return currentplayListSongTile(
+                            playListName: playlistSong[index].playlistName!,
+                            playSong: playSong,
+                            index: index,
+                            songId: songId,
+                            playlistSong: playlistSong,
+                            context: context);
+                      }),
+                    )
+                  : noPlaylistWidget(const Color.fromARGB(255, 135, 154, 251));
             },
           ))
         ],
@@ -738,11 +758,12 @@ mostPlayListSongTile(
   );
 }
 
-Center noPlaylistWidget() {
+Center noPlaylistWidget(Color textColor) {
   return Center(
       child: Text(
     'You can create your own playlist :)',
-    style: safeGoogleFont('Poppins', fontWeight: FontWeight.w500),
+    style: safeGoogleFont('Poppins',
+        fontWeight: FontWeight.w500, color: textColor),
   ));
 }
 

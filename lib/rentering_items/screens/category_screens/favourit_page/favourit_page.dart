@@ -36,6 +36,9 @@ class _FavouritSongPageState extends State<FavouritSongPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
     return Scaffold(
       body: ValueListenableBuilder<Box<FavouritSongModel>>(
           valueListenable: favBox.listenable(),
@@ -45,7 +48,8 @@ class _FavouritSongPageState extends State<FavouritSongPage> {
             return Stack(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 8, left: 15),
+                  padding: EdgeInsets.only(
+                      top: height * .015, left: width * .035, bottom: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -53,7 +57,7 @@ class _FavouritSongPageState extends State<FavouritSongPage> {
                         children: [
                           mainHeading("FAVOURIT"),
                           Padding(
-                            padding: const EdgeInsets.only(left: 82),
+                            padding: EdgeInsets.only(left: width * .24),
                             child: (favouriteSongs.isEmpty)
                                 ? const Icon(Icons.favorite_outline)
                                 : const Icon(Icons.favorite_outlined,
@@ -73,7 +77,7 @@ class _FavouritSongPageState extends State<FavouritSongPage> {
                   ),
                 ),
                 Padding(
-                    padding: const EdgeInsets.only(top: 65),
+                    padding: EdgeInsets.only(top: height * .085),
                     child: (favouriteSongs.isNotEmpty)
                         ? ListView.builder(
                             physics: const BouncingScrollPhysics(),

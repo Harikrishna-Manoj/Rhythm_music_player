@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -53,6 +55,9 @@ class _MusicListPageState extends State<MusicListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -104,8 +109,8 @@ class _MusicListPageState extends State<MusicListPage> {
               },
             ),
             Positioned(
-                top: 620,
-                left: 220,
+                top: height * .8,
+                left: width * .34,
                 child: FloatingActionButton.extended(
                     backgroundColor: const Color(0xFF879AFB),
                     onPressed: () {

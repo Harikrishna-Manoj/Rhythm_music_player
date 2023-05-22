@@ -51,6 +51,9 @@ class _MusicPlayState extends State<MusicPlay> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     Duration duration = Duration.zero;
     Duration position = Duration.zero;
+    var size = MediaQuery.of(context).size;
+    var height = size.height;
+    var width = size.width;
     return Scaffold(
       backgroundColor: const Color(0xFF879AFB),
       body: SafeArea(
@@ -151,13 +154,13 @@ class _MusicPlayState extends State<MusicPlay> with TickerProviderStateMixin {
                                     ))
                               ],
                             ),
-                            const SizedBox(
-                              height: 30,
+                            SizedBox(
+                              height: height * .04,
                             ),
                             rotatingImage(
                                 animation: animation, playing: playing),
-                            const SizedBox(
-                              height: 30,
+                            SizedBox(
+                              height: height * .04,
                             ),
                             songNameArtist(
                               songNameArtist: player.getCurrentAudioTitle,
@@ -171,7 +174,7 @@ class _MusicPlayState extends State<MusicPlay> with TickerProviderStateMixin {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
+                                  EdgeInsets.symmetric(horizontal: width * .05),
                               child: Column(
                                 children: [
                                   skipTime(player: player),
@@ -182,7 +185,8 @@ class _MusicPlayState extends State<MusicPlay> with TickerProviderStateMixin {
                                   PlayerBuilder.isPlaying(
                                     player: player,
                                     builder: (context, isPlaying) => Padding(
-                                      padding: const EdgeInsets.only(top: 20),
+                                      padding:
+                                          EdgeInsets.only(top: height * .03),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,

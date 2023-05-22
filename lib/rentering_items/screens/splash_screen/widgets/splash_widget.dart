@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
-Center logo() {
+Center logo(context) {
+  var size = MediaQuery.of(context).size;
+  var height = size.height;
+  var width = size.width;
   return Center(
     child: Padding(
-      padding: const EdgeInsets.only(bottom: 150, left: 10),
-      child: Image.asset('assets/images/Logo.png'),
+      padding: EdgeInsets.only(bottom: height * .20, right: width * 0.03),
+      child: Image.asset('assets/images/LOGO.png'),
     ),
   );
 }

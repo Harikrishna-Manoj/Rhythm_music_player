@@ -6,9 +6,12 @@ import 'package:text_scroll/text_scroll.dart';
 import '../../../styles_images/utils.dart';
 import '../../category_screens/favourit_page/favourit_page.dart';
 
-Widget bottomDetails() {
+Widget bottomDetails(context) {
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
+  final size = MediaQuery.of(context).size;
+  final height = size.height;
+  final width = size.width;
   return player.builderCurrent(
       builder: (context, playing) => Column(
             children: [

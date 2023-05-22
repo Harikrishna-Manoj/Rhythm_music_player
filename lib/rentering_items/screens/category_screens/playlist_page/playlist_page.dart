@@ -18,16 +18,37 @@ class _PlayListState extends State<PlayList> {
   late List<PlaylistSongModel> playListSongs = playBox.values.toList();
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 8, left: 15),
-            child: mainHeading("PLAY LIST"),
+            padding: EdgeInsets.only(
+              top: height * .015,
+              left: width * .035,
+              bottom: 20,
+              right: width * .035,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                mainHeading("PLAY LIST"),
+                IconButton(
+                    tooltip: 'Create Playlist',
+                    onPressed: () => showcreatePlayList(context),
+                    icon: const Icon(
+                      Icons.add,
+                      color: Color(0xFF879AFB),
+                      size: 35,
+                    ))
+              ],
+            ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 50),
+            padding: EdgeInsets.only(top: height * 0.095),
             child: ValueListenableBuilder<Box<PlaylistSongModel>>(
                 valueListenable: playBox.listenable(),
                 builder: (context, Box<PlaylistSongModel> playSong, child) {
@@ -61,18 +82,8 @@ class _PlayListState extends State<PlayList> {
                           },
                           itemCount: playListSongs.length,
                         )
-                      : noPlaylistWidget();
+                      : noPlaylistWidget(Colors.black);
                 }),
-          ),
-          Positioned(
-            top: 520,
-            left: 280,
-            child: FloatingActionButton(
-              onPressed: () => showcreatePlayList(context),
-              backgroundColor: const Color(0xFF879AFB),
-              elevation: 5,
-              child: const Icon(Icons.add),
-            ),
           ),
         ],
       ),

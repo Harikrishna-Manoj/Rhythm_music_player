@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../../styles_images/utils.dart';
 
-Container searchWidget() {
+Container searchWidget(context) {
+  var size = MediaQuery.of(context).size;
+  var height = size.height;
+  var width = size.width;
   return Container(
-    height: 40,
-    width: 300,
+    height: height * 0.05,
+    width: width * .83,
     decoration: const BoxDecoration(
       color: Color.fromARGB(255, 219, 222, 235),
       borderRadius: BorderRadius.all(Radius.circular(20)),

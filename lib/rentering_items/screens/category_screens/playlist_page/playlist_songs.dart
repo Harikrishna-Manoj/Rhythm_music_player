@@ -37,7 +37,8 @@ class _PlayListSongState extends State<PlayListSong> {
   @override
   Widget build(BuildContext context) {
     final playBox = PlayListSongBox.getInstance();
-
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -52,7 +53,7 @@ class _PlayListSongState extends State<PlayListSong> {
                       size: 15,
                     )),
                 Padding(
-                  padding: const EdgeInsets.only(left: 70),
+                  padding: EdgeInsets.only(left: width * .17),
                   child: Text(
                     'Playlist Songs',
                     style: safeGoogleFont(

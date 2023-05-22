@@ -34,15 +34,23 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    var height = size.height;
+    var width = size.width;
     return SafeArea(
         child: Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: EdgeInsets.only(
+              left: width * .040,
+              top: height * .008,
+              right: width * .040,
+              bottom: height * .01,
+            ),
             child: SizedBox(
-              height: 40,
+              height: height * 0.05,
               child: TextFormField(
                 controller: searchcontroller,
                 cursorColor: Colors.black,

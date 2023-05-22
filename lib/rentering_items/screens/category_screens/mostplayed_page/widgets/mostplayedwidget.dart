@@ -20,6 +20,9 @@ Column mostGrid({
   required int image,
   required int time,
 }) {
+  final size = MediaQuery.of(context).size;
+  final height = size.height;
+  final width = size.width;
   return Column(
     children: [
       Stack(
@@ -40,8 +43,8 @@ Column mostGrid({
               child: QueryArtworkWidget(
                 keepOldArtwork: true,
                 artworkBorder: BorderRadius.circular(10),
-                artworkHeight: 120,
-                artworkWidth: 150,
+                artworkHeight: height * 0.15,
+                artworkWidth: width * 0.45,
                 artworkFit: BoxFit.fill,
                 id: image,
                 type: ArtworkType.AUDIO,
@@ -49,8 +52,8 @@ Column mostGrid({
                   child: ClipRRect(
                     child: Image.asset(
                       'assets/images/head1.png',
-                      height: 120,
-                      width: 150,
+                      height: height * 0.15,
+                      width: width * 0.45,
                       fit: BoxFit.cover,
                     ),
                   ),

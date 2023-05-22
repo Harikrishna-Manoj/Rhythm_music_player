@@ -27,12 +27,15 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    var height = size.height;
+    var width = size.width;
     return Scaffold(
       key: _scaffoldKey,
       drawer: Drawer(
         backgroundColor: const Color(0xFF879AFB),
         child: ListView(
-          padding: const EdgeInsets.only(left: 10.0, top: 50),
+          padding: EdgeInsets.only(left: width * .01, top: height * .05),
           children: [settingsItems(context)],
         ),
       ),
@@ -40,7 +43,7 @@ class _CategoryPageState extends State<CategoryPage> {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 110),
+              padding: EdgeInsets.only(top: height * .14),
               child: ListView(
                 children: [
                   DefaultTabController(
@@ -95,11 +98,11 @@ class _CategoryPageState extends State<CategoryPage> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 50,
+                    height: height * .06,
                     child: Row(
                       children: [
                         IconButton(
-                          padding: const EdgeInsets.only(right: 10),
+                          padding: EdgeInsets.only(right: width * .02),
                           icon: const Icon(
                             Icons.arrow_back_ios_new,
                             color: Colors.black,
@@ -119,22 +122,25 @@ class _CategoryPageState extends State<CategoryPage> {
                                       child: const SearchScreen(),
                                       type: PageTransitionType.topToBottom),
                                 ),
-                            child: searchWidget())
+                            child: searchWidget(context))
                       ],
                     ),
                   ),
                   SizedBox(
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 20, right: 20, left: 10, bottom: 10),
+                      padding: EdgeInsets.only(
+                        top: height * .015,
+                        right: width * .04,
+                        left: width * .03,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
-                            height: 30,
+                            height: 25,
                             child: InkWell(
                               child: Image.asset(
-                                'assets/images/setting.png',
+                                'assets/images/settings.png',
                               ),
                               onTap: () {
                                 _scaffoldKey.currentState?.openDrawer();
@@ -142,7 +148,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             ),
                           ),
                           SizedBox(
-                            height: 30,
+                            height: 25,
                             child: InkWell(
                               onTap: () => Navigator.pushReplacement(
                                 context,
@@ -151,7 +157,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                     type: PageTransitionType.leftToRight),
                               ),
                               child: Image.asset(
-                                'assets/images/head.png',
+                                'assets/images/all_songs.png',
                                 fit: BoxFit.cover,
                               ),
                             ),

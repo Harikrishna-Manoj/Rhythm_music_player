@@ -19,7 +19,7 @@ InkWell bottomSheet(BuildContext context) {
               topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0))),
       height: 115,
       width: double.infinity,
-      child: bottomDetails(),
+      child: bottomDetails(context),
     ),
   );
 }

@@ -40,15 +40,19 @@ class _MostSongState extends State<MostSong> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
     return Scaffold(
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 8, left: 15),
+            padding: EdgeInsets.only(
+                top: height * .015, left: width * .035, bottom: 20),
             child: mainHeading("MOST PLAYED"),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 50),
+            padding: EdgeInsets.only(top: height * 0.065),
             child: ValueListenableBuilder<Box<MostPlayedSongModel>>(
                 valueListenable: box.listenable(),
                 builder: (context, value, child) {
