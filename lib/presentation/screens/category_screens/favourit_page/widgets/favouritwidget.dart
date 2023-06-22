@@ -79,7 +79,7 @@ InkWell songListFavourite({
                   context,
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
-                        const CategoryPage(),
+                        CategoryPage(),
                     transitionDuration: Duration.zero,
                     reverseTransitionDuration: Duration.zero,
                   ));

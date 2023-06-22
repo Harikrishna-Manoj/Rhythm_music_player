@@ -1,45 +1,19 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rythm1/application/most_played_bloc/most_played_bloc.dart';
 import 'package:rythm1/presentation/screens/category_screens/mostplayed_page/widgets/mostplayedwidget.dart';
-import '../../../../domain/models/most_played_song_model.dart';
 import '../../../common_widgets/common.dart';
 
-class MostSong extends StatefulWidget {
-  const MostSong({super.key});
+class MostSong extends StatelessWidget {
+  MostSong({super.key});
 
-  @override
-  State<MostSong> createState() => _MostSongState();
-}
-
-class _MostSongState extends State<MostSong> {
-  final box = MostPlayedSongBox.getInstance();
   final AssetsAudioPlayer audioPlayer = AssetsAudioPlayer.withId('0');
-  List<Audio> mostAudios = [];
-  @override
-  void initState() {
-    List<MostPlayedSongModel> mostMusics = box.values.toList();
-    int i = 0;
-    for (var most in mostMusics) {
-      if (most.count > 3) {
-        mostPlayedSongs.insert(i, most);
-        i++;
-      }
-    }
-    for (var item in mostPlayedSongs) {
-      mostAudios.add(Audio.file(item.songurl,
-          metas: Metas(
-              title: item.songName,
-              artist: item.artist,
-              id: item.id.toString())));
-    }
-    super.initState();
-  }
-
-  List<MostPlayedSongModel> mostPlayedSongs = [];
-
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<MostPlayedBloc>(context).add(GetAllMostPlayedSongs());
+    });
     final size = MediaQuery.of(context).size;
     final height = size.height;
     final width = size.width;
@@ -53,31 +27,30 @@ class _MostSongState extends State<MostSong> {
           ),
           Padding(
             padding: EdgeInsets.only(top: height * 0.065),
-            child: ValueListenableBuilder<Box<MostPlayedSongModel>>(
-                valueListenable: box.listenable(),
-                builder: (context, value, child) {
-                  return (mostPlayedSongs.isNotEmpty)
-                      ? GridView.count(
-                          physics: const BouncingScrollPhysics(),
-                          shrinkWrap: true,
-                          crossAxisCount: 2,
-                          children: List.generate(
-                            mostPlayedSongs.length,
-                            (index) => mostGrid(
-                              listedMostSongs: mostPlayedSongs,
-                              audioplayer: audioPlayer,
-                              mostAudios: mostAudios,
-                              index: index,
-                              context: context,
-                              artist: mostPlayedSongs[index].artist,
-                              songName: mostPlayedSongs[index].songName,
-                              image: mostPlayedSongs[index].id,
-                              time: mostPlayedSongs[index].duration,
-                            ),
-                          ),
-                        )
-                      : noMostWidget();
-                }),
+            child: BlocBuilder<MostPlayedBloc, MostPlayedState>(
+                builder: (context, state) {
+              return (state.mostPlayedSongs.isNotEmpty)
+                  ? GridView.count(
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      crossAxisCount: 2,
+                      children: List.generate(
+                        state.mostPlayedSongs.length,
+                        (index) => mostGrid(
+                          listedMostSongs: state.mostPlayedSongs,
+                          audioplayer: audioPlayer,
+                          mostAudios: state.mostAudio,
+                          index: index,
+                          context: context,
+                          artist: state.mostPlayedSongs[index].artist,
+                          songName: state.mostPlayedSongs[index].songName,
+                          image: state.mostPlayedSongs[index].id,
+                          time: state.mostPlayedSongs[index].duration,
+                        ),
+                      ),
+                    )
+                  : noMostWidget();
+            }),
           ),
         ],
       ),

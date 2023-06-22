@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rythm1/application/playlist_bloc/playlist_bloc.dart';
 import 'package:rythm1/infrastructure/database_functions/playlist_functios/playlist_fun.dart';
 import 'package:rythm1/presentation/common_widgets/common.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -93,6 +95,7 @@ ListTile playListSongsList(
   var width = size.width;
   return ListTile(
     onTap: () {
+      log(playName);
       audioPlayer.open(Playlist(audios: playConvertedAudio, startIndex: index),
           showNotification: true,
           headPhoneStrategy: HeadPhoneStrategy.pauseOnUnplugPlayOnPlug);
@@ -135,8 +138,11 @@ ListTile playListSongsList(
       children: [
         IconButton(
           onPressed: () {
-            playlistSongs.removeAt(index);
-            playlistName.removeAt(playIndex);
+            BlocProvider.of<PlaylistBloc>(context).add(DeletePlaylistSong(
+                index: index,
+                playIndex: playIndex,
+                playName: playlistName,
+                playsongs: playlistSongs));
             showSnackBar(
                 context: context,
                 message: 'Removed from playList $playName ',
@@ -203,7 +209,8 @@ showConfirmationDialog(BuildContext context, int index) {
             )),
         TextButton(
             onPressed: () {
-              deletePlaylist(index);
+              BlocProvider.of<PlaylistBloc>(context)
+                  .add(DeletePlaylist(index: index));
               Navigator.pop(context);
               showSnackBar(
                   context: context,
@@ -299,8 +306,9 @@ showcreatePlayList(BuildContext context) {
                           : !checkingExistance(textController.text)
                               ? () async {
                                   log('list created');
-                                  createPlaylist(
-                                      playlistName: textController.text);
+                                  BlocProvider.of<PlaylistBloc>(context).add(
+                                      CreatePlaylist(
+                                          playlistName: textController.text));
                                   Navigator.pop(context);
                                   textController.clear();
 
@@ -417,10 +425,10 @@ showeditPlayList(BuildContext context, int index) {
                           : !checkingExistance(textEditController.text)
                               ? () async {
                                   log('updated');
-                                  editPlayList(
-                                      name: textEditController.text,
-                                      index: index);
-
+                                  BlocProvider.of<PlaylistBloc>(context).add(
+                                      EditPlayList(
+                                          index: index,
+                                          name: textEditController.text));
                                   Navigator.pop(context);
                                   textEditController.clear();
 
@@ -465,7 +473,6 @@ showeditPlayList(BuildContext context, int index) {
 
 showPlayListBottomSheet(
     {required BuildContext context, required int songIndex}) {
-  final playBox = PlayListSongBox.getInstance();
   showBottomSheet(
     context: context,
     builder: (context) => Container(
@@ -498,22 +505,18 @@ showPlayListBottomSheet(
                   ))
             ],
           ),
-          Expanded(
-              child: ValueListenableBuilder<Box<PlaylistSongModel>>(
-            valueListenable: playBox.listenable(),
-            builder: (context, Box<PlaylistSongModel> playSong, child) {
-              List<PlaylistSongModel> playlistSong = playSong.values.toList();
-              return playlistSong.isNotEmpty
+          Expanded(child: BlocBuilder<PlaylistBloc, PlaylistState>(
+            builder: (context, state) {
+              return state.playList.isNotEmpty
                   ? ListView.builder(
                       shrinkWrap: true,
-                      itemCount: playlistSong.length,
+                      itemCount: state.playList.length,
                       itemBuilder: ((context, index) {
                         return playListSongTile(
-                            playListName: playlistSong[index].playlistName!,
-                            playSong: playSong,
+                            playListName: state.playList[index].playlistName!,
                             index: index,
                             songIndex: songIndex,
-                            playlistSong: playlistSong,
+                            playlistSong: state.playList,
                             context: context);
                       }),
                     )
@@ -530,7 +533,6 @@ showSearchPlayListBottomSheet(
     {required BuildContext context,
     required int songIndex,
     required List<SongsModel> serchSongList}) {
-  final playBox = PlayListSongBox.getInstance();
   showBottomSheet(
     context: context,
     builder: (context) => Container(
@@ -563,22 +565,18 @@ showSearchPlayListBottomSheet(
                   ))
             ],
           ),
-          Expanded(
-              child: ValueListenableBuilder<Box<PlaylistSongModel>>(
-            valueListenable: playBox.listenable(),
-            builder: (context, Box<PlaylistSongModel> playSong, child) {
-              List<PlaylistSongModel> playlistSong = playSong.values.toList();
-              return playlistSong.isNotEmpty
+          Expanded(child: BlocBuilder<PlaylistBloc, PlaylistState>(
+            builder: (context, state) {
+              return state.playList.isNotEmpty
                   ? ListView.builder(
                       shrinkWrap: true,
-                      itemCount: playlistSong.length,
+                      itemCount: state.playList.length,
                       itemBuilder: ((context, index) {
                         return searchPlayListSongTile(
-                            playListName: playlistSong[index].playlistName!,
-                            playSong: playSong,
+                            playListName: state.playList[index].playlistName!,
                             index: index,
                             songIndex: songIndex,
-                            playlistSong: playlistSong,
+                            playlistSong: state.playList,
                             context: context,
                             serchSongList: serchSongList);
                       }),
@@ -595,7 +593,6 @@ showSearchPlayListBottomSheet(
 searchPlayListSongTile(
     {required String playListName,
     required List<SongsModel> serchSongList,
-    required Box<PlaylistSongModel> playSong,
     required int index,
     required int songIndex,
     required List<PlaylistSongModel> playlistSong,
@@ -618,7 +615,8 @@ searchPlayListSongTile(
     ),
     trailing: IconButton(
       onPressed: () {
-        deletePlaylist(index);
+        BlocProvider.of<PlaylistBloc>(context)
+            .add(DeletePlaylist(index: index));
       },
       icon: const Icon(Icons.remove_circle_outline),
       color: Colors.white,
@@ -631,7 +629,6 @@ showMostPagePlayListBottomSheet({
   required int songIndex,
   required List<MostPlayedSongModel> listedMostSongs,
 }) {
-  final playBox = PlayListSongBox.getInstance();
   showBottomSheet(
     context: context,
     builder: (context) => Container(
@@ -664,23 +661,19 @@ showMostPagePlayListBottomSheet({
                   ))
             ],
           ),
-          Expanded(
-              child: ValueListenableBuilder<Box<PlaylistSongModel>>(
-            valueListenable: playBox.listenable(),
-            builder: (context, Box<PlaylistSongModel> playSong, child) {
-              List<PlaylistSongModel> playlistSong = playSong.values.toList();
-              return playlistSong.isNotEmpty
+          Expanded(child: BlocBuilder<PlaylistBloc, PlaylistState>(
+            builder: (context, state) {
+              return state.playList.isNotEmpty
                   ? ListView.builder(
                       shrinkWrap: true,
-                      itemCount: playlistSong.length,
+                      itemCount: state.playList.length,
                       itemBuilder: ((context, index) {
                         return mostPlayListSongTile(
                             listedMostSongs: listedMostSongs,
-                            playListName: playlistSong[index].playlistName!,
-                            playSong: playSong,
+                            playListName: state.playList[index].playlistName!,
                             index: index,
                             songIndex: songIndex,
-                            playlistSong: playlistSong,
+                            playlistSong: state.playList,
                             context: context);
                       }),
                     )
@@ -784,7 +777,8 @@ currentplayListSongTile(
     ),
     trailing: IconButton(
       onPressed: () {
-        deletePlaylist(index);
+        BlocProvider.of<PlaylistBloc>(context)
+            .add(DeletePlaylist(index: index));
       },
       icon: const Icon(Icons.remove_circle_outline),
       color: const Color.fromARGB(255, 135, 154, 251),
@@ -794,7 +788,6 @@ currentplayListSongTile(
 
 playListSongTile(
     {required String playListName,
-    required Box<PlaylistSongModel> playSong,
     required int index,
     required int songIndex,
     required List<PlaylistSongModel> playlistSong,
@@ -817,7 +810,8 @@ playListSongTile(
     ),
     trailing: IconButton(
       onPressed: () {
-        deletePlaylist(index);
+        BlocProvider.of<PlaylistBloc>(context)
+            .add(DeletePlaylist(index: index));
       },
       icon: const Icon(Icons.remove_circle_outline),
       color: Colors.white,
@@ -828,7 +822,6 @@ playListSongTile(
 mostPlayListSongTile(
     {required String playListName,
     required List<MostPlayedSongModel> listedMostSongs,
-    required Box<PlaylistSongModel> playSong,
     required int index,
     required int songIndex,
     required List<PlaylistSongModel> playlistSong,
@@ -851,7 +844,8 @@ mostPlayListSongTile(
     ),
     trailing: IconButton(
       onPressed: () {
-        deletePlaylist(index);
+        BlocProvider.of<PlaylistBloc>(context)
+            .add(DeletePlaylist(index: index));
       },
       icon: const Icon(Icons.remove_circle_outline),
       color: Colors.white,

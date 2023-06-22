@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rythm1/application/playlist_bloc/playlist_bloc.dart';
 import 'package:rythm1/presentation/screens/category_screens/playlist_page/playlist_songs.dart';
 import 'package:rythm1/presentation/screens/category_screens/playlist_page/widgets/playlistwidget.dart';
 import 'package:page_transition/page_transition.dart';
-import '../../../../domain/models/playlist_song_model.dart';
 import '../../../common_widgets/common.dart';
 
-class PlayList extends StatefulWidget {
+class PlayList extends StatelessWidget {
   const PlayList({super.key});
 
   @override
-  State<PlayList> createState() => _PlayListState();
-}
-
-class _PlayListState extends State<PlayList> {
-  final playBox = PlayListSongBox.getInstance();
-  late List<PlaylistSongModel> playListSongs = playBox.values.toList();
-  @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<PlaylistBloc>(context).add(GetAllPlaylist());
+    });
     final size = MediaQuery.of(context).size;
     final height = size.height;
     final width = size.width;
@@ -49,41 +45,36 @@ class _PlayListState extends State<PlayList> {
           ),
           Padding(
             padding: EdgeInsets.only(top: height * 0.095),
-            child: ValueListenableBuilder<Box<PlaylistSongModel>>(
-                valueListenable: playBox.listenable(),
-                builder: (context, Box<PlaylistSongModel> playSong, child) {
-                  List<PlaylistSongModel> playListSongs =
-                      playSong.values.toList();
-                  return (playListSongs.isNotEmpty)
-                      ? ListView.builder(
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  PageTransition(
-                                      child: PlayListSong(
-                                          playIndex: index,
-                                          playListName: playListSongs[index]
-                                              .playlistName),
-                                      type: PageTransitionType.rightToLeft),
-                                );
-                              },
-                              child: songListPlaylist(
-                                  playListImage: 'assets/images/playlist.png',
-                                  playListName:
-                                      playListSongs[index].playlistName!,
-                                  numberofSongs: playListSongs[index]
-                                      .playlistSongs!
-                                      .length,
-                                  context: context,
-                                  index: index),
+            child: BlocBuilder<PlaylistBloc, PlaylistState>(
+                builder: (context, state) {
+              return (state.playList.isNotEmpty)
+                  ? ListView.builder(
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                  child: PlayListSong(
+                                      playIndex: index,
+                                      playListName:
+                                          state.playList[index].playlistName),
+                                  type: PageTransitionType.rightToLeft),
                             );
                           },
-                          itemCount: playListSongs.length,
-                        )
-                      : noPlaylistWidget(Colors.black);
-                }),
+                          child: songListPlaylist(
+                              playListImage: 'assets/images/playlist.png',
+                              playListName: state.playList[index].playlistName!,
+                              numberofSongs:
+                                  state.playList[index].playlistSongs!.length,
+                              context: context,
+                              index: index),
+                        );
+                      },
+                      itemCount: state.playList.length,
+                    )
+                  : noPlaylistWidget(Colors.black);
+            }),
           ),
         ],
       ),

@@ -20,7 +20,6 @@ class MusicPlay extends StatefulWidget {
 }
 
 // ignore: prefer_typing_uninitialized_variables
-var orientation, size, height, width;
 
 class _MusicPlayState extends State<MusicPlay> with TickerProviderStateMixin {
   late AnimationController animationController;
@@ -102,51 +101,60 @@ class _MusicPlayState extends State<MusicPlay> with TickerProviderStateMixin {
                                       Icons.playlist_add,
                                       color: Colors.white,
                                     )),
-                                IconButton(
-                                  icon: (checkFavourite(
-                                          int.parse(
-                                              playing.audio.audio.metas.id!),
-                                          BuildContext))
-                                      ? Icon(
-                                          Icons.favorite_outlined,
-                                          color: Colors.white.withOpacity(0.8),
-                                        )
-                                      : Icon(
-                                          Icons.favorite_outlined,
-                                          color: Colors.red.withOpacity(0.8),
-                                        ),
-                                  onPressed: () {
-                                    if (checkFavourite(
-                                        int.parse(
-                                            playing.audio.audio.metas.id!),
-                                        BuildContext)) {
-                                      BlocProvider.of<FavouriteBloc>(context)
-                                          .add(AddOrRemoveFavourite(
-                                              id: int.parse(playing
-                                                  .audio.audio.metas.id!),
-                                              context: context,
-                                              textColor: Colors.white,
-                                              colors: const Color(0xFF879AFB)));
-                                    } else if (!checkFavourite(
-                                        int.parse(
-                                            playing.audio.audio.metas.id!),
-                                        BuildContext)) {
-                                      BlocProvider.of<FavouriteBloc>(context)
-                                          .add(RemoveFromFavourite(
-                                              songId: int.parse(playing
-                                                  .audio.audio.metas.id!),
-                                              context: context));
-                                    }
-                                    setState(() {
-                                      checkFavourite(
+                                BlocBuilder<FavouriteBloc, FavouriteState>(
+                                  builder: (context, state) {
+                                    return IconButton(
+                                      icon: (checkFavourite(
                                               int.parse(playing
                                                   .audio.audio.metas.id!),
-                                              BuildContext) !=
-                                          checkFavourite(
-                                              int.parse(playing
-                                                  .audio.audio.metas.id!),
-                                              BuildContext);
-                                    });
+                                              BuildContext))
+                                          ? Icon(
+                                              Icons.favorite_outlined,
+                                              color:
+                                                  Colors.white.withOpacity(0.8),
+                                            )
+                                          : Icon(
+                                              Icons.favorite_outlined,
+                                              color:
+                                                  Colors.red.withOpacity(0.8),
+                                            ),
+                                      onPressed: () {
+                                        if (checkFavourite(
+                                            int.parse(
+                                                playing.audio.audio.metas.id!),
+                                            BuildContext)) {
+                                          BlocProvider.of<FavouriteBloc>(
+                                                  context)
+                                              .add(AddOrRemoveFavourite(
+                                                  id: int.parse(playing
+                                                      .audio.audio.metas.id!),
+                                                  context: context,
+                                                  textColor:
+                                                      const Color(0xFF879AFB),
+                                                  colors: Colors.white));
+                                        } else if (!checkFavourite(
+                                            int.parse(
+                                                playing.audio.audio.metas.id!),
+                                            BuildContext)) {
+                                          BlocProvider.of<FavouriteBloc>(
+                                                  context)
+                                              .add(RemoveFromFavourite(
+                                                  songId: int.parse(playing
+                                                      .audio.audio.metas.id!),
+                                                  context: context));
+                                        }
+                                        // setState(() {
+                                        //   checkFavourite(
+                                        //           int.parse(playing
+                                        //               .audio.audio.metas.id!),
+                                        //           BuildContext) !=
+                                        //       checkFavourite(
+                                        //           int.parse(playing
+                                        //               .audio.audio.metas.id!),
+                                        //           BuildContext);
+                                        // });
+                                      },
+                                    );
                                   },
                                 ),
                                 IconButton(

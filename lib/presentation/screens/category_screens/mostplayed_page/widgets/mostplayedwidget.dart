@@ -8,7 +8,6 @@ import '../../../../../domain/models/most_played_song_model.dart';
 import '../../../../../infrastructure/database_functions/favourit_function/favourit_functions.dart';
 import '../../../../styles_images/utils.dart';
 import '../../../miniplayer/mini_player.dart';
-import '../../category_page.dart';
 import '../../playlist_page/widgets/playlistwidget.dart';
 
 Column mostGrid({
@@ -25,6 +24,8 @@ Column mostGrid({
   final size = MediaQuery.of(context).size;
   final height = size.height;
   final width = size.width;
+  final audioPlayer = AssetsAudioPlayer.withId('0');
+
   return Column(
     children: [
       Stack(
@@ -67,23 +68,27 @@ Column mostGrid({
             left: 110,
             child: Column(
               children: [
-                IconButton(
-                  icon: (checkFavourite(image, BuildContext))
-                      ? const Icon(
-                          Icons.favorite_border,
-                          color: Color(0xFF879AFB),
-                        )
-                      : const Icon(
-                          Icons.favorite,
-                          color: Color(0xFF879AFB),
-                        ),
-                  onPressed: () {
-                    BlocProvider.of<FavouriteBloc>(context).add(
-                        AddOrRemoveFavourite(
-                            id: image,
-                            colors: const Color(0xFF879AFB),
-                            textColor: Colors.white,
-                            context: context));
+                BlocBuilder<FavouriteBloc, FavouriteState>(
+                  builder: (context, state) {
+                    return IconButton(
+                      icon: (checkFavourite(image, BuildContext))
+                          ? const Icon(
+                              Icons.favorite_border,
+                              color: Color(0xFF879AFB),
+                            )
+                          : const Icon(
+                              Icons.favorite,
+                              color: Color(0xFF879AFB),
+                            ),
+                      onPressed: () {
+                        BlocProvider.of<FavouriteBloc>(context).add(
+                            AddOrRemoveFavourite(
+                                id: image,
+                                colors: const Color(0xFF879AFB),
+                                textColor: Colors.white,
+                                context: context));
+                      },
+                    );
                   },
                 ),
                 IconButton(

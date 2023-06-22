@@ -4,7 +4,8 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rythm1/application/favourite_bloc/favourite_bloc.dart';
-import 'package:rythm1/infrastructure/database_functions/most_function/most_function.dart';
+import 'package:rythm1/application/most_played_bloc/most_played_bloc.dart';
+import 'package:rythm1/application/recent_bloc/recent_bloc.dart';
 import 'package:rythm1/presentation/screens/category_screens/playlist_page/widgets/playlistwidget.dart';
 import 'package:rythm1/presentation/screens/miniplayer/mini_player.dart';
 import 'package:rythm1/presentation/screens/music_list_screen/music_list_page.dart';
@@ -14,14 +15,11 @@ import '../../../../domain/models/most_played_song_model.dart';
 import '../../../../domain/models/recent_song_model.dart';
 import '../../../../domain/models/song_model.dart';
 import '../../../../infrastructure/database_functions/favourit_function/favourit_functions.dart';
-import '../../../../infrastructure/database_functions/recent_function/recent_fun.dart';
 import '../../../styles_images/utils.dart';
 import '../../music_operation_screen/music_operation_page.dart';
 
 InkWell allMusicList(
-    {RecentSongModel? recentSong,
-    required List<MostPlayedSongModel> mostSongs,
-    required SongsModel songs,
+    {required SongsModel songs,
     required int image,
     required String songName,
     required String artist,
@@ -31,7 +29,9 @@ InkWell allMusicList(
   var size = MediaQuery.of(context).size;
   var height = size.height;
   var width = size.width;
-
+  final AssetsAudioPlayer audioPlayer = AssetsAudioPlayer.withId('0');
+  List<MostPlayedSongModel> mostDbSongs =
+      MostPlayedSongBox.getInstance().values.toList();
   return InkWell(
     onTap: () {
       audioPlayer.open(
@@ -47,16 +47,18 @@ InkWell allMusicList(
       log('$songIndex');
 
       audioPlayer.setLoopMode(LoopMode.playlist);
-      recentSong = RecentSongModel(
+      RecentSongModel? recentSong = RecentSongModel(
           id: songs.id,
           index: songIndex,
           artist: songs.artist,
           duration: songs.duration,
           songName: songs.songName,
           songUrl: songs.songurl);
-      addToRecent(recentSong!);
-      log('$mostSongs');
-      addMostSong(songIndex, mostSongs[songIndex]);
+      BlocProvider.of<RecentBloc>(context)
+          .add(AddToRecent(recentSong: recentSong));
+      log('$mostDbSongs');
+      BlocProvider.of<MostPlayedBloc>(context)
+          .add(AddToMostPlayed(mostPlayedSong: mostDbSongs[songIndex]));
       log('bottom');
       showBottomSheet(
         context: context,
@@ -109,22 +111,27 @@ InkWell allMusicList(
           const SizedBox(
             width: 10,
           ),
-          IconButton(
-            icon: (checkFavourite(image, BuildContext))
-                ? const Icon(
-                    Icons.favorite_border,
-                    color: Color(0xFF879AFB),
-                  )
-                : const Icon(
-                    Icons.favorite,
-                    color: Color(0xFF879AFB),
-                  ),
-            onPressed: () {
-              BlocProvider.of<FavouriteBloc>(context).add(AddOrRemoveFavourite(
-                  id: image,
-                  colors: const Color(0xFF879AFB),
-                  textColor: Colors.white,
-                  context: context));
+          BlocBuilder<FavouriteBloc, FavouriteState>(
+            builder: (context, state) {
+              return IconButton(
+                icon: (checkFavourite(image, BuildContext))
+                    ? const Icon(
+                        Icons.favorite_border,
+                        color: Color(0xFF879AFB),
+                      )
+                    : const Icon(
+                        Icons.favorite,
+                        color: Color(0xFF879AFB),
+                      ),
+                onPressed: () {
+                  BlocProvider.of<FavouriteBloc>(context).add(
+                      AddOrRemoveFavourite(
+                          id: image,
+                          colors: const Color(0xFF879AFB),
+                          textColor: Colors.white,
+                          context: context));
+                },
+              );
             },
           )
         ],

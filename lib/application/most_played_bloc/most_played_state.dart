@@ -1,10 +1,20 @@
 part of 'most_played_bloc.dart';
 
 @immutable
-abstract class MostPlayedState {}
+abstract class MostPlayedState {
+  final List<MostPlayedSongModel> mostPlayedSongs;
+  final List<Audio> mostAudio;
 
-class MostPlayedInitial extends MostPlayedState {
-  MostPlayedInitial();
+  const MostPlayedState(
+      {required this.mostPlayedSongs, required this.mostAudio});
 }
 
-class DisplayMostPlayedSongs extends MostPlayedState {}
+class MostPlayedInitial extends MostPlayedState {
+  const MostPlayedInitial(
+      {required super.mostPlayedSongs, required super.mostAudio});
+}
+
+class DisplayMostPlayedSongs extends MostPlayedState {
+  const DisplayMostPlayedSongs(
+      {required super.mostPlayedSongs, required super.mostAudio});
+}

@@ -1,122 +1,13 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rythm1/application/playlist_bloc/playlist_bloc.dart';
 import 'package:rythm1/presentation/common_widgets/common.dart';
 
 import '../../../domain/models/most_played_song_model.dart';
 import '../../../domain/models/playlist_song_model.dart';
 import '../../../domain/models/song_model.dart';
-
-createPlaylist({required String playlistName}) {
-  final playBox = PlayListSongBox.getInstance();
-  List<SongsModel> playSongs = [];
-  playBox.add(
-      PlaylistSongModel(playlistName: playlistName, playlistSongs: playSongs));
-}
-
-editPlayList({required String name, required int index}) {
-  final playBox = PlayListSongBox.getInstance();
-  List<PlaylistSongModel> playSongs = playBox.values.toList();
-  playBox.putAt(
-      index,
-      PlaylistSongModel(
-          playlistName: name, playlistSongs: playSongs[index].playlistSongs));
-}
-
-addToPlaylist(int songIndex, int index, BuildContext context) {
-  final songBox = SongBox.getInstance();
-  final playBox = PlayListSongBox.getInstance();
-  List<PlaylistSongModel> playDbSongs = playBox.values.toList();
-
-  PlaylistSongModel? playSongs = playBox.getAt(index);
-  List<dynamic> playListDb = playSongs!.playlistSongs!;
-  List<SongsModel> songdb = songBox.values.toList();
-
-  playListDb.add(SongsModel(
-      id: songdb[songIndex].id,
-      songName: songdb[songIndex].songName,
-      artist: songdb[songIndex].artist,
-      duration: songdb[songIndex].duration,
-      songurl: songdb[songIndex].songurl));
-
-  playBox.putAt(
-      index,
-      PlaylistSongModel(
-          playlistName: playDbSongs[index].playlistName,
-          playlistSongs: playListDb));
-  Navigator.pop(context);
-  showSnackBar(
-      context: context,
-      message: 'Song added',
-      colors: const Color(0xFF879AFB),
-      textColor: Colors.white);
-}
-
-searchToPlaylist(int songIndex, int index, BuildContext context,
-    List<SongsModel> serchSongList) {
-  final playBox = PlayListSongBox.getInstance();
-  List<PlaylistSongModel> playDbSongs = playBox.values.toList();
-
-  PlaylistSongModel? playSongs = playBox.getAt(index);
-  List<dynamic> playListDb = playSongs!.playlistSongs!;
-
-  playListDb.add(SongsModel(
-      id: serchSongList[songIndex].id,
-      songName: serchSongList[songIndex].songName,
-      artist: serchSongList[songIndex].artist,
-      duration: serchSongList[songIndex].duration,
-      songurl: serchSongList[songIndex].songurl));
-
-  playBox.putAt(
-      index,
-      PlaylistSongModel(
-          playlistName: playDbSongs[index].playlistName,
-          playlistSongs: playListDb));
-  Navigator.pop(context);
-  showSnackBar(
-      context: context,
-      message: 'Song added',
-      colors: const Color(0xFF879AFB),
-      textColor: Colors.white);
-}
-
-mostAddToPlaylist(
-    int songIndex, int index, BuildContext context, listedMostSongs) {
-  final playBox = PlayListSongBox.getInstance();
-  List<PlaylistSongModel> playDbSongs = playBox.values.toList();
-
-  PlaylistSongModel? playSongs = playBox.getAt(index);
-  List playListDb = playSongs!.playlistSongs!;
-  bool isallReadyAdded =
-      playListDb.any((element) => element.id == listedMostSongs[songIndex].id);
-
-  if (!isallReadyAdded) {
-    playListDb.add(SongsModel(
-      id: listedMostSongs[songIndex].id,
-      songName: listedMostSongs[songIndex].songName,
-      artist: listedMostSongs[songIndex].artist,
-      duration: listedMostSongs[songIndex].duration,
-      songurl: listedMostSongs[songIndex].songurl,
-    ));
-  }
-  // log('added');
-  playBox.putAt(
-      index,
-      PlaylistSongModel(
-          playlistName: playDbSongs[index].playlistName,
-          playlistSongs: playListDb));
-  Navigator.pop(context);
-  showSnackBar(
-      context: context,
-      message: 'Song added',
-      colors: const Color(0xFF879AFB),
-      textColor: Colors.white);
-}
-
-deletePlaylist(int index) {
-  final playBox = PlayListSongBox.getInstance();
-  playBox.deleteAt(index);
-}
 
 bool checkingExistance(String value) {
   final playBox = PlayListSongBox.getInstance();
@@ -143,9 +34,9 @@ checkingSongExistance(int index, int songIndex, BuildContext context) {
         message: 'You already added this song',
         colors: Colors.red,
         textColor: Colors.white);
-  } else {
-    addToPlaylist(songIndex, index, context);
-  }
+  } else {}
+  BlocProvider.of<PlaylistBloc>(context)
+      .add(AddToPlaylist(songIndex: songIndex, index: index, context: context));
 }
 
 checkingSearchSongExistance(int index, int songIndex, BuildContext context,
@@ -165,7 +56,11 @@ checkingSearchSongExistance(int index, int songIndex, BuildContext context,
         colors: Colors.red,
         textColor: Colors.white);
   } else {
-    searchToPlaylist(songIndex, index, context, serchSongList);
+    BlocProvider.of<PlaylistBloc>(context).add(SearchToPlaylist(
+        songIndex: songIndex,
+        index: index,
+        context: context,
+        serchSongList: serchSongList));
   }
 }
 
@@ -191,7 +86,11 @@ checkingMostSongExistance(
         colors: Colors.red,
         textColor: Colors.white);
   } else {
-    mostAddToPlaylist(songIndex, index, context, listedMostSongs);
+    BlocProvider.of<PlaylistBloc>(context).add(MostAddToPlaylist(
+        songIndex: songIndex,
+        index: index,
+        context: context,
+        listedMostSongs: listedMostSongs));
   }
 }
 
@@ -211,38 +110,7 @@ checkCurrentPlayingToPlaylist(
         colors: Colors.red,
         textColor: Colors.white);
   } else {
-    currentPlayingAddtoPlaylist(
-        songId: songId, context: context, playlistIndex: playlistIndex);
+    BlocProvider.of<PlaylistBloc>(context).add(CurrentPlayingAddtoPlaylist(
+        songId: songId, context: context, playlistIndex: playlistIndex));
   }
-}
-
-currentPlayingAddtoPlaylist({
-  required int songId,
-  required BuildContext context,
-  required int playlistIndex,
-}) {
-  final playBox = PlayListSongBox.getInstance();
-  final songBox = SongBox.getInstance();
-  List<SongsModel> allSongs = songBox.values.toList();
-  PlaylistSongModel? selectedPlaylist = playBox.getAt(playlistIndex);
-  List<dynamic> playDbSongs = selectedPlaylist!.playlistSongs!;
-  SongsModel selectedSong =
-      allSongs.firstWhere((element) => element.id == songId);
-  log('${selectedPlaylist.playlistName}');
-  playDbSongs.add(SongsModel(
-      id: selectedSong.id,
-      songName: selectedSong.songName,
-      artist: selectedSong.artist,
-      duration: selectedSong.duration,
-      songurl: selectedSong.songurl));
-  playBox.putAt(
-      playlistIndex,
-      PlaylistSongModel(
-          playlistName: selectedPlaylist.playlistName,
-          playlistSongs: playDbSongs));
-  showSnackBar(
-      context: context,
-      message: 'Song Added',
-      colors: const Color(0xFF879AFB),
-      textColor: Colors.white);
 }

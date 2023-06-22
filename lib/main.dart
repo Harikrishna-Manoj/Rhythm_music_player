@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:rythm1/application/allmusic_bloc/allmusic_bloc.dart';
 import 'package:rythm1/application/favourite_bloc/favourite_bloc.dart';
+import 'package:rythm1/application/most_played_bloc/most_played_bloc.dart';
+import 'package:rythm1/application/play_bloc/play_bloc.dart';
+import 'package:rythm1/application/playlist_bloc/playlist_bloc.dart';
+import 'package:rythm1/application/recent_bloc/recent_bloc.dart';
 import 'package:rythm1/application/search_bloc/search_bloc.dart';
 
 import 'package:rythm1/presentation/screens/explore_screen/explore_recend_page.dart';
@@ -48,10 +52,22 @@ class MyApp extends StatelessWidget {
             create: (context) => AllmusicBloc(),
           ),
           BlocProvider(
+            create: (context) => RecentBloc(),
+          ),
+          BlocProvider(
             create: (context) => FavouriteBloc(),
           ),
           BlocProvider(
+            create: (context) => MostPlayedBloc(),
+          ),
+          BlocProvider(
+            create: (context) => PlaylistBloc(),
+          ),
+          BlocProvider(
             create: (context) => SearchBloc(),
+          ),
+          BlocProvider(
+            create: (context) => PlayBloc(),
           )
         ],
         child: MaterialApp(
@@ -63,7 +79,7 @@ class MyApp extends StatelessWidget {
             // scrollBehavior: MyCustomScrollBehavior(),
             home: const SplashScreen(),
             routes: {
-              'explore': (context) => const ExplorePages(),
+              'explore': (context) => ExplorePages(),
             }));
   }
 }

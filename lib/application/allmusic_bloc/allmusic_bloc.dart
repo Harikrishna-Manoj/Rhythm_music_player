@@ -12,6 +12,7 @@ class AllmusicBloc extends Bloc<AllmusicEvent, AllmusicState> {
   AllmusicBloc()
       : super(const AllmusicInitial(allSongs: [], convertedAudio: [])) {
     on<GetAllSongs>((event, emit) {
+      print("first bloc");
       final songDb = SongBox.getInstance();
       List<SongsModel> songsList = songDb.values.toList();
       List<Audio> convertAudios = [];

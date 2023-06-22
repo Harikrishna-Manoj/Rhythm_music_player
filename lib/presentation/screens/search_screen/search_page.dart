@@ -73,74 +73,74 @@ class SearchScreen extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(child: BlocBuilder<FavouriteBloc, FavouriteState>(
+          Expanded(child: BlocBuilder<SearchBloc, SearchState>(
             builder: (context, state) {
-              return BlocBuilder<SearchBloc, SearchState>(
-                builder: (context, state) {
-                  if (state.searchList.isEmpty) {
-                    return noSearchWidget();
-                  }
-                  return ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: ((context, songIndex) {
-                      final music = state.searchList[songIndex];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: ListTile(
-                          onTap: () {
-                            player.open(
-                              Audio.file(music.songurl!,
-                                  metas: Metas(
-                                      title: music.songName,
-                                      artist: music.artist,
-                                      id: music.id.toString())),
-                              showNotification: true,
-                            );
-                            showBottomSheet(
-                              context: context,
-                              builder: (context) => bottomSheet(
-                                context,
-                              ),
-                            );
-                          },
-                          leading: QueryArtworkWidget(
-                            id: music.id!,
-                            type: ArtworkType.AUDIO,
-                            quality: 100,
-                            artworkQuality: FilterQuality.high,
-                            artworkBorder: BorderRadius.circular(15),
-                            artworkFit: BoxFit.cover,
-                            nullArtworkWidget: ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: Image.asset(
-                                'assets/images/head1.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+              if (state.searchList.isEmpty) {
+                return noSearchWidget();
+              }
+              return ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: ((context, songIndex) {
+                  final music = state.searchList[songIndex];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: ListTile(
+                      onTap: () {
+                        player.open(
+                          Audio.file(music.songurl!,
+                              metas: Metas(
+                                  title: music.songName,
+                                  artist: music.artist,
+                                  id: music.id.toString())),
+                          showNotification: true,
+                        );
+                        showBottomSheet(
+                          context: context,
+                          builder: (context) => bottomSheet(
+                            context,
                           ),
-                          title: TextScroll(
-                            mode: TextScrollMode.endless,
-                            velocity:
-                                const Velocity(pixelsPerSecond: Offset(30, 0)),
-                            music.songName!,
-                            style: safeGoogleFont('Poppins',
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                height: 1.5,
-                                color: Colors.black),
+                        );
+                      },
+                      leading: QueryArtworkWidget(
+                        id: music.id!,
+                        type: ArtworkType.AUDIO,
+                        quality: 100,
+                        artworkQuality: FilterQuality.high,
+                        artworkBorder: BorderRadius.circular(15),
+                        artworkFit: BoxFit.cover,
+                        nullArtworkWidget: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.asset(
+                            'assets/images/head1.png',
+                            fit: BoxFit.cover,
                           ),
-                          subtitle: Text(
-                            music.artist!,
-                            style: safeGoogleFont('Poppins',
-                                fontWeight: FontWeight.w500),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          trailing: SizedBox(
-                            width: 100,
-                            child: Row(
-                              children: [
-                                IconButton(
+                        ),
+                      ),
+                      title: TextScroll(
+                        mode: TextScrollMode.endless,
+                        velocity:
+                            const Velocity(pixelsPerSecond: Offset(30, 0)),
+                        music.songName!,
+                        style: safeGoogleFont('Poppins',
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            height: 1.5,
+                            color: Colors.black),
+                      ),
+                      subtitle: Text(
+                        music.artist!,
+                        style: safeGoogleFont('Poppins',
+                            fontWeight: FontWeight.w500),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: SizedBox(
+                        width: 100,
+                        child: Row(
+                          children: [
+                            BlocBuilder<FavouriteBloc, FavouriteState>(
+                              builder: (context, state) {
+                                return IconButton(
                                   icon: (checkFavourite(music.id, BuildContext))
                                       ? const Icon(
                                           Icons.favorite_border,
@@ -158,27 +158,27 @@ class SearchScreen extends StatelessWidget {
                                             textColor: Colors.white,
                                             context: context));
                                   },
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      showSearchPlayListBottomSheet(
-                                          serchSongList: state.searchList,
-                                          context: context,
-                                          songIndex: songIndex);
-                                    },
-                                    icon: const Icon(
-                                      Icons.add,
-                                      color: Colors.black,
-                                    ))
-                              ],
+                                );
+                              },
                             ),
-                          ),
+                            IconButton(
+                                onPressed: () {
+                                  showSearchPlayListBottomSheet(
+                                      serchSongList: state.searchList,
+                                      context: context,
+                                      songIndex: songIndex);
+                                },
+                                icon: const Icon(
+                                  Icons.add,
+                                  color: Colors.black,
+                                ))
+                          ],
                         ),
-                      );
-                    }),
-                    itemCount: state.searchList.length,
+                      ),
+                    ),
                   );
-                },
+                }),
+                itemCount: state.searchList.length,
               );
             },
           ))

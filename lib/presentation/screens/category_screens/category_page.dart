@@ -1,4 +1,3 @@
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:rythm1/presentation/common_widgets/common.dart';
 import 'package:rythm1/presentation/screens/category_screens/favourit_page/favourit_page.dart';
@@ -7,22 +6,13 @@ import 'package:rythm1/presentation/screens/category_screens/mostplayed_page/mos
 import 'package:rythm1/presentation/screens/explore_screen/explore_recend_page.dart';
 import 'package:rythm1/presentation/screens/search_screen/search_page.dart';
 import 'package:page_transition/page_transition.dart';
-import '../../../domain/models/song_model.dart';
 import '../music_list_screen/music_list_page.dart';
 import '../search_screen/widgets/search_widget.dart';
 import '../settings_screen/setting_page.dart';
 
-class CategoryPage extends StatefulWidget {
-  const CategoryPage({super.key});
+class CategoryPage extends StatelessWidget {
+  CategoryPage({super.key});
 
-  @override
-  State<CategoryPage> createState() => _CategoryPageState();
-}
-
-final audioPlayer = AssetsAudioPlayer.withId('0');
-final box = SongBox.getInstance();
-
-class _CategoryPageState extends State<CategoryPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -80,7 +70,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                 child: TabBarView(
                                   children: [
                                     FavouritSongPage(),
-                                    const MostSong(),
+                                    MostSong(),
                                     const PlayList(),
                                   ],
                                 ),
@@ -110,7 +100,7 @@ class _CategoryPageState extends State<CategoryPage> {
                           onPressed: () => Navigator.pushReplacement(
                               context,
                               PageTransition(
-                                  child: const ExplorePages(),
+                                  child: ExplorePages(),
                                   type: PageTransitionType.leftToRight)),
                           iconSize: 15,
                         ),

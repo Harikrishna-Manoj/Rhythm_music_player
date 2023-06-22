@@ -1,6 +1,7 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rythm1/application/playlist_bloc/playlist_bloc.dart';
 import 'package:rythm1/presentation/screens/category_screens/playlist_page/widgets/playlistwidget.dart';
 import '../../../../domain/models/playlist_song_model.dart';
 import '../../../styles_images/utils.dart';
@@ -36,7 +37,6 @@ class _PlayListSongState extends State<PlayListSong> {
 
   @override
   Widget build(BuildContext context) {
-    final playBox = PlayListSongBox.getInstance();
     final size = MediaQuery.of(context).size;
     final width = size.width;
     return Scaffold(
@@ -67,36 +67,34 @@ class _PlayListSongState extends State<PlayListSong> {
               ],
             ),
             Expanded(
-              child: ValueListenableBuilder<Box<PlaylistSongModel>>(
-                  valueListenable: playBox.listenable(),
-                  builder:
-                      (context, Box<PlaylistSongModel> playListSong, child) {
-                    List<PlaylistSongModel> playListName =
-                        playListSong.values.toList();
-                    List<dynamic>? playListPageSongs =
-                        playListName[widget.playIndex!].playlistSongs;
-                    return playListPageSongs!.isNotEmpty
-                        ? ListView.builder(
-                            itemCount: playListPageSongs.length,
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return playListSongsList(
-                                  songImage: playListPageSongs[index].id!,
-                                  songName: playListPageSongs[index].songName!,
-                                  audioPlayer: audioPlayer,
-                                  playConvertedAudio: playListAudio,
-                                  artist: playListPageSongs[index].artist!,
-                                  playlistSongs: playListPageSongs,
-                                  playlistName: playListName,
-                                  index: index,
-                                  playName: widget.playListName!,
-                                  playIndex: widget.playIndex!,
-                                  playBox: playBox,
-                                  context: context);
-                            },
-                          )
-                        : noPlaylistSongWidget();
-                  }),
+              child: BlocBuilder<PlaylistBloc, PlaylistState>(
+                  builder: (context, state) {
+                final playBox = PlayListSongBox.getInstance();
+                List<PlaylistSongModel> playListName = playBox.values.toList();
+                List<dynamic>? playListPageSongs =
+                    state.playList[widget.playIndex!].playlistSongs;
+                return playListPageSongs!.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: playListPageSongs.length,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return playListSongsList(
+                              songImage: playListPageSongs[index].id!,
+                              songName: playListPageSongs[index].songName!,
+                              audioPlayer: audioPlayer,
+                              playConvertedAudio: playListAudio,
+                              artist: playListPageSongs[index].artist!,
+                              playlistSongs: playListPageSongs,
+                              playlistName: playListName,
+                              index: index,
+                              playName: widget.playListName!,
+                              playIndex: widget.playIndex!,
+                              playBox: playBox,
+                              context: context);
+                        },
+                      )
+                    : noPlaylistSongWidget();
+              }),
             )
           ],
         ),
